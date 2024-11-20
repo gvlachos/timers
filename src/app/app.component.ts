@@ -1,12 +1,26 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { defaultTimer, TimerId } from '../timer/timer.model';
+import { TimerService } from '../timer/timer.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [CommonModule],
+  providers: [TimerService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'timers';
+  readonly timer = defaultTimer;
+
+  protected timerService = inject(TimerService);
+
+  ngOnInit(): void {
+    this.timerService.setTimer(defaultTimer);
+    this.timerService.start(TimerId.default);
+  }
+
+  ngOnDestroy(): void {
+    this.timerService.stop(TimerId.default);
+  }
 }
